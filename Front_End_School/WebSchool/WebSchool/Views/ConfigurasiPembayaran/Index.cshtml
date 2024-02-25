@@ -1,0 +1,280 @@
+@using WebSchool.Service.Interface;
+@using System.Threading;
+@using System.Threading.Tasks;
+
+@inject ITahunAjarService TahunAjaranService;
+
+@{
+    CancellationToken cancellationToken = new CancellationToken();
+    var DataTahunAjaran = await TahunAjaranService.ListTahunAjaran(0, cancellationToken);
+
+}
+
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Data Configurasi Pembayaran</h5>
+                    <br />
+                    <button type="button" class="btn btn-primary" onclick="showTambahConfig();">Tambah</button>
+                    <br />
+                    <br />
+                    <table class="table table-striped table-bordered dt-responsive nowrap" id="tabelConfigurasiPembayaran">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="font-size:14px;">Pembayaran</th>
+                                <th scope="col" style="font-size:14px;">Tahun Ajaran</th>
+                                <th scope="col" style="font-size:14px;">Kelas</th>
+                                <th scope="col" style="font-size:14px;">Nilai Pembayaran</th>
+                                <th scope="col" style="font-size:14px;">Deskripsi</th>
+                                <th scope="col" style="font-size:14px;">Aktif</th>
+                                <th scope="col" style="font-size:14px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="TambahConfig" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Config Pembayaran</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Pembayaran</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="NamaPembayaran" aria-label="NamaPembayaran" style="font-size:14px;" required>
+                            <option selected></option>
+                            <option value="Uang Bangunan">Uang Bangunan</option>
+                            <option value="Daftar Ulang">DaftarUlang</option>
+                            <option value="SPP">SPP</option>
+                            <option value="Semester Ganjil">Semester Ganjil</option>
+                            <option value="Semester Genap">Semester Genap</option>
+                            <option value="Praktek Kerja Lapangan">Praktek Kerja Lapangan</option>
+                            <option value="Seragam">Seragam</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Tahun Ajaran</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="TahunAjaran" maxlength="50" aria-label="TahunAjaran" style="font-size:14px;" required>
+                            <option selected></option>
+                            @if(DataTahunAjaran.Data.Any()){
+                                foreach(var data in DataTahunAjaran.Data)
+                                {
+                                    <option value="@data.Id">@data.TahunAjaran</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Kelas</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="Kelas" maxlength="50" aria-label="Kelas" style="font-size:14px;" required>
+                            <option selected></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Uang Bayar</label>
+                    <div class="col-sm-10">
+                        <input type="number" value="0" id="NilaiPembayaran" class="form-control" style="font-size:14px;" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Deskripsi</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="Deskripsi" maxlength="50" style="height: 60px; font-size:14px;"></textarea>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Aktif</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="Aktif" aria-label="Aktif" style="font-size:14px;" required>
+                            <option selected></option>
+                            <option value="1">Aktif</option>
+                            <option value="0">Tidak Aktif</option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" style="font-size:14px;" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary" style="font-size:14px;" onclick="SaveDataConfigurasiPembayaran();">Simpan</button>
+            </div>
+            </form><!-- End General Form Elements -->
+        </div>
+    </div>
+</div><!-- End Basic Modal-->
+
+<div class="modal fade" id="EditConfig" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Config Pembayaran</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+            <div class="modal-body">
+                <input type="text" id="Id" class="form-control" readonly>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Pembayaran</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="NamaPembayaran1" aria-label="NamaPembayaran1" style="font-size:14px;" required>
+                            <option selected></option>
+                            <option value="Uang Bangunan">Uang Bangunan</option>
+                            <option value="Daftar Ulang">Daftar Ulang</option>
+                            <option value="SPP">SPP</option>
+                            <option value="Semester Ganjil">Semester Ganjil</option>
+                            <option value="Semester Genap">Semester Genap</option>
+                                <option value="Praktek Kerja Lapangan">Praktek Kerja Lapangan</option>
+                            <option value="Seragam">Seragam</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputPassword" class="col-sm-2 col-form-label" style="font-size:14px;">Tahun Ajaran</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="TahunAjaran1" aria-label="TahunAjaran1" style="font-size:14px;" required>
+                            <option selected></option>
+                            @if (DataTahunAjaran.Data.Any())
+                            {
+                                foreach (var data in DataTahunAjaran.Data)
+                                {
+                                    <option value="@data.Id">@data.TahunAjaran</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Kelas</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="Kelas1" maxlength="50" aria-label="Kelas1" style="font-size:14px;" required>
+                            <option selected></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nilai</label>
+                    <div class="col-sm-10">
+                        <input type="number" id="NilaiPembayaran1" class="form-control" style="font-size:14px;" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputEmail" class="col-sm-2 col-form-label" style="font-size:14px;">Deskripsi</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="Deskripsi1" style="height: 60px; font-size:14px;"></textarea>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputPassword" class="col-sm-2 col-form-label" style="font-size:14px;">Aktif</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="Aktif1" aria-label="Aktif1" required>
+                            <option selected></option>
+                            <option value="1">Aktif</option>
+                            <option value="0">Tidak Aktif</option>
+
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary" onclick="UpdateDataConfigurasiPembayaran();">Simpan</button>
+            </div>
+            </form><!-- End General Form Elements -->
+        </div>
+    </div>
+</div><!-- End Basic Modal-->
+
+<link href="~/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/css/jquery-ui.min.css" rel="stylesheet">
+
+<style>
+    .table.dataTable {
+        font-size: 14px;
+    }
+</style>
+
+<script src="~/js/jquery-3.5.1.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="~/js/swallfire/sweetalert2.min.js"></script>
+<script src="~/js/swallfire/sweetalert2.all.min.js"></script>
+<script src="~/js/apps/configurasi_pembayaran/configurasi_pembayaran.js"></script>
+
+<script>
+
+    $(document).ready(function (){
+        $("#tabelConfigurasiPembayaran").DataTable({
+            destroy: true,
+            paging: true,
+            searching: true
+        });
+    });
+
+    GetDataConfigPembayaran();
+
+    function showTambahConfig()
+    {
+        $('#TambahConfig').modal('show');
+    }
+
+    function pingURL() {
+         var settings = {
+            cache: false,
+            //dataType: "jsonp", 
+            dataType: "application/json", 
+            crossDomain: true,
+            url: "Ping/GetPing",
+            method: "GET",
+            timeout: 5000,
+            headers: {accept: "application/json", "Access-Control-Allow-Origin": "*",},
+
+            statusCode: {
+               200: function (response) {
+                 
+               },
+               400: function (response) {
+                  
+               },
+               0: function (response) {
+                  
+               },
+            },
+         };
+         // Sends the request and observes the response
+         $.ajax(settings).done(function (response) {
+            console.log("Success -----> " + response);
+         })
+         .fail(function (response) {
+            console.log("Error -----> " + response);
+            alert("Not Connected Server, Check internet Or Server...!");
+         });
+      }
+</script>

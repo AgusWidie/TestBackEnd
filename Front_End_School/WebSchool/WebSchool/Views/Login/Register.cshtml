@@ -1,0 +1,64 @@
+
+@{
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMS v1.0</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/fontawesome-all.min.css">
+    <link rel="stylesheet" type="text/css" href="css/iofrm-style.css">
+    <link rel="stylesheet" type="text/css" href="css/iofrm-theme9.css">
+</head>
+<body>
+    <div class="form-body">
+        <div class="row">
+            <div class="img-holder">
+                <div class="bg"></div>
+                <div class="info-holder">
+                   @* <h3>Get more things done with Loggin platform.</h3>
+                    <p>Access to the most powerfull tool in the entire design and web industry.</p>*@
+                    <img src="~/images/graphic5.svg" alt="">
+                </div>
+            </div>
+            <div class="form-holder">
+                <div class="form-content">
+                    <div class="form-items">
+                        <div class="website-logo-inside">
+                            <a href="index.html">
+                                <div class="logo">
+                                    @*<img class="logo-size" src="images/logo-light.svg" alt="">*@
+                                    <span style="font-size:18px;">SIMS V1.0</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="page-links">
+                            <a asp-controller="login" asp-action="Index" class="active">Masuk</a><a asp-controller="Login" asp-action="Register">Daftar</a>
+                        </div>
+                        <form>
+                            <input class="form-control" type="text" id="NamaLengkap" name="NamaLengkap" placeholder="Nama Lengkap" required>
+                            <input class="form-control" type="text" id="NamaPengguna" name="NamaPengguna" placeholder="Nama Pengguna" required>
+                            <input class="form-control" type="password" id="KataSandi" name="KataSandi" placeholder="Kata Sandi" required>
+                            <div class="form-button">
+                                <button id="submit" type="submit" class="ibtn">Daftar</button>
+                            </div>
+                        </form>
+                        <div class="other-links">
+                            <span>Or register with</span><a href="#">Google</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+@using WebSchool.Service.Interface;
+@using WebSchool.Service;
+@using System.Threading;
+@using System.Threading.Tasks;
+
+@inject ILoginPenggunaService LoginData;
+
+@{
+    CheckTokenModel CheckToken = new CheckTokenModel();
+    CheckToken.NamaPengguna = "";
+    CancellationToken cancellationToken;
+
+    string NamaPengguna = await LoginData.LoginPengguna(cancellationToken);
+    CheckToken.NamaPengguna = NamaPengguna;
+}
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ganti Password</h5>
+                    <br />
+                    <br />
+                    <form class="row g-3 needs-validation" novalidate>
+                        <div class="row mb-3">
+                            <label for="inputText" class="col-sm-2 col-form-label" style="font-size:16px;">Nama Pengguna</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="NamaPengguna" value="@NamaPengguna" maxlength="50" class="form-control" style="font-size:16px;" required readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="PasswordLama" class="col-sm-2 col-form-label" style="font-size:16px;">Kata Sandi Lama</label>
+                            <div class="col-sm-10">
+                                <input type="password" id="PasswordLama" name="password" maxlength="15" class="form-control" style="font-size:16px;" required>
+                                
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="PasswordBaru" class="col-sm-2 col-form-label" style="font-size:16px;">Kata Sandi Baru</label>
+                            <div class="col-sm-10">
+                                <input type="password" id="PasswordBaru" name="password" maxlength="15" class="form-control" style="font-size:16px;" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="PasswordBaru" class="col-sm-2 col-form-label" style="font-size:16px;"></label>
+                            <div class="col-sm-10">
+                                <input type="checkbox" id="checkTampilPassword" name="checkTampilPassword" style="font-size:14px;height:14px;width:16px;" onclick="TampilPassword();"> Tampilkan Kata Sandi
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <button type="button" class="btn btn-primary" style="font-size:16px; height:40px;" onclick="SavePassword();">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@*<link href="~/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/css/jquery-ui.min.css" rel="stylesheet">*@
+
+<style>
+    .table.dataTable {
+        font-size: 14px;
+    }
+</style>
+
+@*<script src="~/js/jquery-3.5.1.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/dataTables.bootstrap4.min.js"></script>*@
+
+<script src="~/js/swallfire/sweetalert2.min.js"></script>
+<script src="~/js/swallfire/sweetalert2.all.min.js"></script>
+<script src="~/js/apps/change_password/change_password.js"></script>
+
+<script>
+
+    function pingURL() {
+        var settings = {
+            cache: false,
+            //dataType: "jsonp",
+            dataType: "application/json",
+            crossDomain: true,
+            url: "Ping/GetPing",
+            method: "GET",
+            timeout: 5000,
+            headers: { accept: "application/json", "Access-Control-Allow-Origin": "*", },
+
+            statusCode: {
+                200: function (response) {
+
+                },
+                400: function (response) {
+
+                },
+                0: function (response) {
+
+                },
+            },
+        };
+        // Sends the request and observes the response
+        $.ajax(settings).done(function (response) {
+            console.log("Success -----> " + response);
+        })
+        .fail(function (response) {
+            console.log("Error -----> " + response);
+            alert("Not Connected Server, Check internet Or Server...!");
+        });
+    }
+</script>

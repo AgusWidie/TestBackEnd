@@ -1,0 +1,358 @@
+@using WebSchool.Service.Interface;
+@using System.Threading;
+@using System.Threading.Tasks;
+@using System.Linq;
+@using System.Collections.Generic;
+
+@inject IGuruService GuruService;
+@inject ITahunAjarService TahunAjaranService;
+@inject IKelasService KelasService;
+@inject IPelajaranService PelajaranService;
+
+@{
+    CancellationToken cancellationToken = new CancellationToken();
+    var DataTahunAjaran = await TahunAjaranService.ListTahunAjaran(0, cancellationToken);
+    var DataGuru = await GuruService.ListGuru(0, cancellationToken);
+    var DataKelas = await KelasService.ListKelas(0, cancellationToken);
+    var DataPelajaran = await PelajaranService.ListPelajaran(0, cancellationToken);
+}
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Data Jadwal Guru Mengajar</h5>
+                    <br />
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="inputText" class="col-sm-5 col-form-label" style="font-size:14px;">Tahun Ajaran :</label>
+                            <select class="form-select" id="TahunAjaran2" aria-label="TahunAjaran2" style="font-size:14px;" required>
+                                <option selected></option>
+                                @if(DataTahunAjaran.Data.Any()){
+                                    foreach(var data in DataTahunAjaran.Data)
+                                    {
+                                        <option value="@data.Id">@data.TahunAjaran</option>
+                                    }
+                                }
+                            </select>
+                        
+                        </div>
+                        <div class="col-md-3">
+                            <label for="inputText" class="col-sm-5 col-form-label" style="font-size:14px;">Nama Kelas :</label>
+                            <select class="form-select" id="NamaKelas2" aria-label="NamaKelas2" style="font-size:14px;" required>
+                                <option selected></option>
+                                @if (DataKelas.Data.Any())
+                                {
+                                    foreach (var data in DataKelas.Data)
+                                    {
+                                        <option value="@data.Id">@data.NamaKelas</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="inputText" class="col-sm-5 col-form-label" style="font-size:14px;">Nama Pelajaran :</label>
+                            <select class="form-select" id="NamaPelajaran2" aria-label="NamaPelajaran2" style="font-size:14px;" required>
+                                <option selected></option>
+                                @if (DataPelajaran.Data.Any())
+                                {
+                                    foreach (var data in DataPelajaran.Data)
+                                    {
+                                        <option value="@data.Id">@data.NamaPelajaran</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </form>
+                    <br />
+                    <form class="row g-2">
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-warning" onclick="GetDataJadwalGuru();">Cari</button>&nbsp;&nbsp;
+                            <button type="button" class="btn btn-primary" onclick="showTambahJadwalGuru();">Tambah</button>
+                        </div>
+                    </form>
+                    <br />
+                    <br />
+                    <table class="table table-striped table-bordered dt-responsive nowrap" id="tabelJadwalGuru">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="font-size:14px;">Tahun Ajaran</th>
+                                <th scope="col" style="font-size:14px;">Nama Kelas</th>
+                                <th scope="col" style="font-size:14px;">Nama Guru</th>
+                                <th scope="col" style="font-size:14px;">Hari</th>
+                                <th scope="col" style="font-size:14px;">Nama Pelajaran</th>
+                                <th scope="col" style="font-size:14px;">Dari Jam</th>
+                                <th scope="col" style="font-size:14px;">Sampai Jam</th>
+                                <th scope="col" style="font-size:14px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="TambahJadwalGuru" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Jadwal Guru Mengajar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nama Guru</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="NamaGuru" aria-label="NamaGuru" style="font-size:14px;">
+                            <option selected></option>
+                            @if(DataGuru.Data.Any()){
+                                foreach(var data in DataGuru.Data)
+                                {
+                                    <option value="@data.Id">@data.NamaGuru</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Hari</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="Hari" aria-label="Hari" style="font-size:14px;" required>
+                            <option selected></option>
+                            <option value="Senin">Senin</option>
+                            <option value="Selasa">Selasa</option>
+                            <option value="Rabu">Rabu</option>
+                            <option value="Kamis">Kamis</option>
+                            <option value="Jum'at">Jum'at</option>
+                            <option value="Sabtu">Sabtu</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Tahun Ajaran</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="TahunAjaran" aria-label="TahunAjaran" style="font-size:14px;" required>
+                            <option selected></option>
+                            @if(DataTahunAjaran.Data.Any()){
+                                foreach(var data in DataTahunAjaran.Data)
+                                {
+                                    <option value="@data.Id">@data.TahunAjaran</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nama Kelas</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="NamaKelas" aria-label="NamaKelas" style="font-size:14px;"required>
+                            <option selected></option>
+                            @if(DataKelas.Data.Any()){
+                                foreach(var data in DataKelas.Data)
+                                {
+                                    <option value="@data.Id">@data.NamaKelas</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nama Pelajaran</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="NamaPelajaran" aria-label="NamaPelajaran" style="font-size:14px;" required>
+                            <option selected></option>
+                            @if (DataPelajaran.Data.Any())
+                            {
+                                foreach (var data in DataPelajaran.Data)
+                                {
+                                    <option value="@data.Id">@data.NamaPelajaran</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Dari Jam</label>
+                    <div class="col-sm-10">
+                        <input type="time" id="DariJam" class="form-control" style="font-size:14px;">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Sampai Jam</label>
+                    <div class="col-sm-10">
+                        <input type="time" id="SampaiJam" class="form-control" style="font-size:14px;">
+                    </div>
+                </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" style="font-size:14px;" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary" style="font-size:14px;" onclick="SaveDataJadwalGuruMengajar();">Simpan</button>
+            </div>
+             </form><!-- End General Form Elements -->
+        </div>
+    </div>
+</div><!-- End Basic Modal-->
+
+<div class="modal fade" id="EditJadwalGuru" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Jadwal Guru Mengajar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+            <div class="modal-body">
+                <input type="text" id="Id" class="form-control" hidden>
+                <input type="text" id="IdTahunAjaran" class="form-control" hidden>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Tahun Ajaran</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="TahunAjaran1" maxlength="50" class="form-control" style="font-size:14px;" readonly required>
+                    </div>
+                </div>
+                <input type="text" id="IdGuru" class="form-control" hidden>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nama Guru</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="NamaGuru1" maxlength="50" class="form-control" style="font-size:14px;" readonly required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Hari</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="Hari1" aria-label="Hari1" style="font-size:14px;" required>
+                            <option selected></option>
+                            <option value="Senin">Senin</option>
+                            <option value="Selasa">Selasa</option>
+                            <option value="Rabu">Rabu</option>
+                            <option value="Kamis">Kamis</option>
+                            <option value="Jum'at">Jum'at</option>
+                            <option value="Sabtu">Sabtu</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nama Kelas</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="NamaKelas1" aria-label="NamaKelas1" style="font-size:14px;" required>
+                            <option selected></option>
+                            @if(DataKelas.Data.Any()){
+                                foreach(var data in DataKelas.Data)
+                                {
+                                    <option value="@data.Id">@data.NamaKelas</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nama Pelajaran</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="NamaPelajaran1" aria-label="NamaPelajaran1" style="font-size:14px;" required>
+                            <option selected></option>
+                            @if (DataPelajaran.Data.Any())
+                            {
+                                foreach (var data in DataPelajaran.Data)
+                                {
+                                    <option value="@data.Id">@data.NamaPelajaran</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputEmail" class="col-sm-2 col-form-label" style="font-size:14px;">Dari Jam</label>
+                    <div class="col-sm-10">
+                        <input type="time" id="DariJam1" class="form-control" style="font-size:14px;">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputEmail" class="col-sm-2 col-form-label" style="font-size:14px;">Sampai Jam</label>
+                    <div class="col-sm-10">
+                        <input type="time" id="SampaiJam1" class="form-control" style="font-size:14px;">
+                    </div>
+                </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" style="font-size:14px;" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary" style="font-size:14px;" onclick="UpdateDataJadwalGuruMengajar();">Simpan</button>
+            </div>
+             </form><!-- End General Form Elements -->
+        </div>
+    </div>
+</div><!-- End Basic Modal-->
+
+<link href="~/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/css/jquery-ui.min.css" rel="stylesheet">
+<style>
+    .table.dataTable {
+        font-size: 14px;
+    }
+</style>
+
+<script src="~/js/jquery-3.5.1.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="~/js/swallfire/sweetalert2.min.js"></script>
+<script src="~/js/swallfire/sweetalert2.all.min.js"></script>
+<script src="~/js/apps/jadwal_guru/jadwal_guru.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $("#tabelJadwalGuru").DataTable({
+            destroy: true,
+            paging: true,
+            searching: true
+        });
+    });
+
+    GetDataJadwalGuru();
+
+    function showTambahJadwalGuru() {
+        $('#TambahJadwalGuru').modal('show');
+    }
+
+    function pingURL() {
+         var settings = {
+            cache: false,
+            //dataType: "jsonp", 
+            dataType: "application/json", 
+            crossDomain: true,
+            url: "Ping/GetPing",
+            method: "GET",
+            timeout: 5000,
+            headers: {accept: "application/json", "Access-Control-Allow-Origin": "*",},
+
+            statusCode: {
+               200: function (response) {
+                 
+               },
+               400: function (response) {
+                  
+               },
+               0: function (response) {
+                  
+               },
+            },
+         };
+         // Sends the request and observes the response
+         $.ajax(settings).done(function (response) {
+            console.log("Success -----> " + response);
+         })
+         .fail(function (response) {
+            console.log("Error -----> " + response);
+            alert("Not Connected Server, Check internet Or Server...!");
+         });
+      }
+</script>

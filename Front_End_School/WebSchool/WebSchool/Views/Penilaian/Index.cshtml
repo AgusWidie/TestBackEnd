@@ -1,0 +1,231 @@
+@using WebSchool.Service.Interface;
+@using System.Threading;
+@using System.Threading.Tasks;
+
+@inject IPelajaranService PelajaranService;
+@{
+    CancellationToken cancellationToken = new CancellationToken();
+    var DataPelajaran = await PelajaranService.ListPelajaran(0, cancellationToken);
+}
+
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Data Penilaian</h5>
+                    <br />
+                    <button type="button" class="btn btn-primary" onclick="showTambahPenilaian();">Tambah</button>
+                    <br />
+                    <br />
+                    <table class="table table-striped table-bordered dt-responsive nowrap" id="tabelPenilaian">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="font-size:14px;">Nama Pelajaran</th>
+                                <th scope="col" style="font-size:14px;">Nama Penilaian</th>
+                                <th scope="col" style="font-size:14px;">Deskripsi</th>
+                                <th scope="col" style="font-size:14px;">Aktif</th>
+                                <th scope="col" style="font-size:14px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="TambahPenilaian" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Penilaian</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+            <div class="modal-body">
+               
+                    <div class="row mb-3">
+                        <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nama Pelajaran</label>
+                        <div class="col-sm-10">
+                            <select class="form-select" id="NamaPelajaran" aria-label="NamaPelajaran" style="font-size:14px;" required>
+                                <option selected></option>
+                                @if (DataPelajaran.Data.Any())
+                                {
+                                    foreach (var data in DataPelajaran.Data)
+                                    {
+                                        <option value="@data.Id">@data.NamaPelajaran</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nama Penilaian</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="NamaPenilaian" maxlength="50" class="form-control" style="font-size:14px;" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Deskripsi</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="Deskripsi" maxlength="150" style="height: 60px;font-size:14px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Aktif</label>
+                        <div class="col-sm-10">
+                            <select class="form-select" id="Aktif" aria-label="Aktif" style="font-size:14px;">
+                                <option selected></option>
+                                <option value="1">Aktif</option>
+                                <option value="0">Tidak Aktif</option>
+
+                            </select>
+                        </div>
+                    </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" style="font-size:14px;" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary" style="font-size:14px;" onclick="SaveDataPenilaian();">Simpan</button>
+            </div>
+            </form><!-- End General Form Elements -->
+        </div>
+    </div>
+</div><!-- End Basic Modal-->
+
+<div class="modal fade" id="EditPenilaian" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Penilaian</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+            <div class="modal-body">
+                
+                    <input type="text" id="Id" class="form-control" hidden>
+                    <div class="row mb-3">
+                        <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nama Pelajaran</label>
+                        <div class="col-sm-10">
+                            <select class="form-select" id="NamaPelajaran1" aria-label="NamaPelajaran1" style="font-size:14px;" required>
+                                 <option selected></option>
+                                @if (DataPelajaran.Data.Any())
+                                {
+                                    foreach (var data in DataPelajaran.Data)
+                                    {
+                                        <option value="@data.Id">@data.NamaPelajaran</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Nama Penilaian</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="NamaPenilaian1" maxlength="50" class="form-control" style="font-size:14px;" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Deskripsi</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="Deskripsi1" maxlength="150" style="height: 60px;font-size:14px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputText" class="col-sm-2 col-form-label" style="font-size:14px;">Aktif</label>
+                        <div class="col-sm-10">
+                            <select class="form-select" id="Aktif1" aria-label="Aktif1">
+                                <option selected></option>
+                                <option value="1">Aktif</option>
+                                <option value="0">Tidak Aktif</option>
+
+                            </select>
+                        </div>
+                    </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" style="font-size:14px;" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary" style="font-size:14px;" onclick="UpdateDataPenilaian();">Simpan</button>
+            </div>
+            </form><!-- End General Form Elements -->
+        </div>
+    </div>
+</div><!-- End Basic Modal-->
+
+<link href="~/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/css/jquery-ui.min.css" rel="stylesheet">
+
+<style>
+    .table.dataTable {
+        font-size: 14px;
+    }
+</style>
+
+<script src="~/js/jquery-3.5.1.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="~/js/swallfire/sweetalert2.min.js"></script>
+<script src="~/js/swallfire/sweetalert2.all.min.js"></script>
+<script src="~/js/apps/penilaian/penilaian.js"></script>
+
+<script>
+
+    $(document).ready(function (){
+        $("#tabelPenilaian").DataTable({
+            destroy: true,
+            paging: true,
+            searching: true
+        });
+    });
+
+    GetDataPenilaian();
+
+    function showTambahPenilaian() 
+    {
+        $('#TambahPenilaian').modal('show');
+    }
+
+
+    function pingURL() {
+        var settings = {
+            cache: false,
+            //dataType: "jsonp",
+            dataType: "application/json",
+            crossDomain: true,
+            url: "Ping/GetPing",
+            method: "GET",
+            timeout: 5000,
+            headers: { accept: "application/json", "Access-Control-Allow-Origin": "*", },
+
+            statusCode: {
+                200: function (response) {
+
+                },
+                400: function (response) {
+
+                },
+                0: function (response) {
+
+                },
+            },
+        };
+        // Sends the request and observes the response
+        $.ajax(settings).done(function (response) {
+            console.log("Success -----> " + response);
+        })
+        .fail(function (response) {
+            console.log("Error -----> " + response);
+            alert("Not Connected Server, Check internet Or Server...!");
+        });
+    }
+</script>
+
+

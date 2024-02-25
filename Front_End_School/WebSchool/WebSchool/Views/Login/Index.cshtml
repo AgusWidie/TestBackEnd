@@ -1,0 +1,89 @@
+
+@{
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMS v1.0</title>
+    <link rel="stylesheet" type="text/css" href="~/css/login/bootstrap.min.css">
+   @* <link rel="stylesheet" type="text/css" href="~/css/login/fontawesome-all.min.css">*@
+    <link rel="stylesheet" type="text/css" href="~/css/login/iofrm-style.css">
+    <link rel="stylesheet" type="text/css" href="~/css/login/iofrm-theme9.css">
+    <link rel="stylesheet" type="text/css" href="~/css/swallfire/sweetalert2.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+</head>
+<body>
+    <div class="form-body">
+        <div class="row">
+            <div class="img-holder">
+                <div class="bg"></div>
+                <div class="info-holder">
+                    <h3>SIMS v1.0</h3>
+                    <p>Sistem Informasi Manajemen Sekolah</p>
+                    <img src="~/images/graphic5.svg" alt="">
+                </div>
+            </div>
+            <div class="form-holder">
+                <div class="form-content">
+                    <div class="form-items" style="font-size:14px;">
+                        <div class="website-logo-inside">
+                            <a href="index.html">
+                                <div class="logo">
+                                    @*<img src="~/images/logo-light.svg" alt="">*@
+                                </div>
+                            </a>
+                        </div>
+                        <div class="page-links">
+                            <a asp-controller="login" asp-action="Index" class="active" style="font-size:16px;">Masuk</a>
+                        </div>
+                        <form>
+                            <input class="form-control" type="text" style="font-size:16px; height:40px;" id="NamaPengguna" name="NamaPengguna" placeholder="Nama Pengguna" required>
+                            <input class="form-control" type="password" style="font-size:16px; height:40px;" id="KataSandi" name="KataSandi" placeholder="Kata Sandi" required>
+                            @*<input type="checkbox" id="checkTampilPassword" name="checkTampilPassword" style="font-size:14px;height:14px;width:16px;" onclick="TampilPassword();"> <span style="color:white;">Tampilkan Kata Sandi</span>*@
+                            <div class="form-button">
+                                <button id="submit" type="button" style="font-size:16px;" class="ibtn" onclick="login();">Masuk</button> <a href="forget9.html">Lupa Kata Sandi?</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/login/jquery.min.js"></script>
+    <script src="~/js/login/popper.min.js"></script>
+    <script src="~/js/login/bootstrap.min.js"></script>
+
+    <script src="~/js/swallfire/sweetalert2.min.js"></script>
+    <script src="~/js/swallfire/sweetalert2.all.min.js"></script>
+    <script src="~/js/apps/login.js"></script>
+
+</body>
+</html>
+
+<script type="text/javascript">
+    history.pushState(null, document.title, location.href);
+
+    window.addEventListener('popstate', function (event) {
+        history.pushState(null, document.title, location.href);
+
+    });
+
+   
+    function TampilPassword() {
+
+        var KataSandi = document.getElementById("KataSandi");
+        if (KataSandi.type === "password") {
+            KataSandi.type = "text";
+        } else {
+            KataSandi.type = "password";
+        }
+
+    }
+</script>
